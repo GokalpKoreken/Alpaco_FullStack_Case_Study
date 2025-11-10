@@ -18,4 +18,10 @@ app.use('/admin', adminRoutes);
 app.get('/', (req, res) => res.json({ ok: true, service: 'DropSpot backend' }));
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`DropSpot backend listening on ${PORT}`));
+
+// Export app for testing. Start server only when run directly.
+if (require.main === module) {
+	app.listen(PORT, () => console.log(`DropSpot backend listening on ${PORT}`));
+}
+
+module.exports = app;
