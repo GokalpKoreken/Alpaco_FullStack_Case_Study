@@ -5,8 +5,15 @@ const { db } = require('../db');
 // NOTE: This simple scaffold uses a naive admin check via ?admin=true query or body flag.
 // In real project, replace with proper auth + roles.
 function checkAdmin(req, res, next) {
-  const isAdmin = req.query.admin === 'true' || req.body.admin === true;
-  if (!isAdmin) return res.status(401).json({ error: 'admin_required' });
+  // Priority: Authorization header (Bearer token using ADMIN_TOKEN env), then query/body flag for convenience.
+  const auth = req.headers.authorization || '';
+  const token = auth.startsWith('Bearer ') ? auth.slice(7).trim() : null;
+  const envToken = process.env.ADMIN_TOKEN || null;
+  const isAdminToken = token && envToken && token === envToken;
+
+  const isAdminFlag = req.query.admin === 'true' || req.body && req.body.admin === true;
+
+  if (!isAdminToken && !isAdminFlag) return res.status(401).json({ error: 'admin_required' });
   next();
 }
 

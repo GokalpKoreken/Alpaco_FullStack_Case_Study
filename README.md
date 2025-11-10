@@ -32,6 +32,15 @@ Frontend:
 Notes
 -----
 - The project start time (used for seed generation) is `202511101556` (YYYYMMDDHHmm).
-- Admin endpoints are protected with a simple `?admin=true` flag for now; replace with proper auth when integrating.
+
+Local development notes
+-----------------------
+- Node version: use Node 18 (LTS) for local development and CI. `better-sqlite3` is a native addon and currently requires a Node version with compatible V8 headers. The included CI uses Node 18 so tests and native modules build.
+
+Admin authentication
+--------------------
+- Admin endpoints accept either `?admin=true` (convenience) or an Authorization header using a bearer token:
+	- Header: `Authorization: Bearer <ADMIN_TOKEN>`
+	- Set `ADMIN_TOKEN` as an environment variable locally or in CI secrets for production use. The server checks the token before allowing admin CRUD operations.
 
 See the `backend/` and `frontend/` READMEs for more details, and the main case README to be finalized with screenshots and tests.
