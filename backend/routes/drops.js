@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { db } = require('../db');
+const config = require('../config');
 const { customAlphabet } = require('nanoid');
 
 const nano = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', 8);
@@ -25,16 +26,24 @@ router.post('/:id/join', (req, res) => {
   const now = Math.floor(Date.now() / 1000);
 
   try {
+    // fetch user to compute signup latency / account age
+    const user = db.prepare('SELECT id, created_at FROM users WHERE id = ?').get(user_id);
+    if (!user) return res.status(404).json({ error: 'user_not_found' });
+
+    const signup_latency_ms = Math.max(0, (now - user.created_at) * 1000);
+    const account_age_days = Math.floor((now - user.created_at) / 86400);
+    const rapid_actions = 0; // placeholder; can be derived from recent activity
+
+    const score = config.computePriorityScore({ signup_latency_ms, account_age_days, rapid_actions });
+
     const insert = db.prepare('INSERT OR IGNORE INTO waitlist(drop_id, user_id, joined_at, priority_score) VALUES(?,?,?,?)');
-    // simple priority_score placeholder: lower is better
-    const score = now % 1000;
     const info = insert.run(dropId, user_id, now, score);
 
     if (info.changes === 0) {
       return res.status(200).json({ ok: true, message: 'already_joined' });
     }
 
-    return res.status(201).json({ ok: true, message: 'joined' });
+    return res.status(201).json({ ok: true, message: 'joined', priority_score: score });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: 'internal_error' });
