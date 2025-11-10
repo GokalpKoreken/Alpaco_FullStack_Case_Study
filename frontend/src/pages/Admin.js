@@ -16,13 +16,14 @@ export default function Admin() {
   }
 
   return (
-    <div>
-      <div>
-        <input placeholder="title" value={title} onChange={e => setTitle(e.target.value)} />
-        <input placeholder="description" value={desc} onChange={e => setDesc(e.target.value)} />
-        <button onClick={createDrop}>Create</button>
+    <div className="controls">
+      <input className="input" placeholder="Title" value={title} onChange={e => setTitle(e.target.value)} />
+      <input className="input" placeholder="Description" value={desc} onChange={e => setDesc(e.target.value)} />
+      <div className="row">
+        <button className="btn" onClick={createDrop}>Create</button>
+        <button className="btn secondary" onClick={() => { setTitle(''); setDesc(''); setResult(null); }}>Clear</button>
       </div>
-      <div style={{ marginTop: 8 }}>
+      <div style={{ marginTop: 8 }} className="result">
         <pre>{result ? JSON.stringify(result, null, 2) : 'No result yet'}</pre>
       </div>
     </div>

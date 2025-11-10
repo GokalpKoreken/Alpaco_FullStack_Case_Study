@@ -16,13 +16,14 @@ export default function Claim() {
   }
 
   return (
-    <div>
-      <div>
-        <input placeholder="user_id" value={userId} onChange={e => setUserId(e.target.value)} />
-        <input placeholder="drop_id" value={dropId} onChange={e => setDropId(e.target.value)} />
-        <button onClick={doClaim}>Claim</button>
+    <div className="controls">
+      <input className="input" placeholder="user id" value={userId} onChange={e => setUserId(e.target.value)} />
+      <input className="input" placeholder="drop id" value={dropId} onChange={e => setDropId(e.target.value)} />
+      <div className="row">
+        <button className="btn" onClick={doClaim}>Claim</button>
+        <button className="btn secondary" onClick={() => { setUserId(''); setDropId(''); setResult(null); }}>Reset</button>
       </div>
-      <div style={{ marginTop: 8 }}>
+      <div className="result" style={{ marginTop: 8 }}>
         <pre>{result ? JSON.stringify(result, null, 2) : 'No result yet'}</pre>
       </div>
     </div>

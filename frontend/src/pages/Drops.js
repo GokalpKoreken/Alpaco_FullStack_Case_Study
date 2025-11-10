@@ -8,20 +8,18 @@ export default function Drops() {
     axios.get('http://localhost:4000/drops').then(r => setDrops(r.data.drops || [])).catch(() => {});
   }, []);
 
+  if (!drops || drops.length === 0) {
+    return <div className="muted">No active drops.</div>;
+  }
+
   return (
-    <div>
-      {drops.length === 0 ? (
-        <p>No active drops.</p>
-      ) : (
-        <ul>
-          {drops.map(d => (
-            <li key={d.id} style={{ marginBottom: 10 }}>
-              <strong>{d.title}</strong>
-              <div style={{ fontSize: 13 }}>{d.description}</div>
-            </li>
-          ))}
-        </ul>
-      )}
+    <div className="drops-list">
+      {drops.map(d => (
+        <div className="drop-card" key={d.id}>
+          <div className="drop-title">{d.title}</div>
+          <div className="drop-desc">{d.description || 'No description'}</div>
+        </div>
+      ))}
     </div>
   );
 }
