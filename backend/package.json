@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "seed": "node seed.js"
+    "seed": "node seed.js",
+    "test": "jest --runInBand"
   },
   "dependencies": {
     "better-sqlite3": "^8.0.0",

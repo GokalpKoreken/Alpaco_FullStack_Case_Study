@@ -2,9 +2,12 @@ const express = require('express');
 const router = express.Router();
 const { db } = require('../db');
 const config = require('../config');
-const { customAlphabet } = require('nanoid');
+const crypto = require('crypto');
 
-const nano = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', 8);
+function nano(size = 8) {
+  // generate a URL-safe uppercase alphanumeric code
+  return crypto.randomBytes(size).toString('base64').replace(/[^0-9A-Za-z]/g, '').slice(0, size).toUpperCase();
+}
 
 // GET /drops -> active drops
 router.get('/', (req, res) => {
